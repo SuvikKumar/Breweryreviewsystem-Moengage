@@ -91,5 +91,5 @@ This is a Flask web application that allows users to search for breweries, view 
 
 ## Repository
 
-The code for this application is available on GitHub: 
+The code for this application is available on GitHub: https://github.com/SuvikKumar/Breweryreviewsystem-Moengage/tree/main
 
