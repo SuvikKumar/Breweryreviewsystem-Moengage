@@ -1,51 +1,21 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user, login_required
 import sqlite3
+import requests
 import logging
-def send_password_to_email(to_address, password):
-    # the SMTP server
-    smtp_server = "your_smtp_server.com"
-    smtp_port = 587
-    username = "abcdefg@gmail.com"
-    password = "zpaf xboz emoh upf"
-    from_address = "abcdefg@gmail.com"
 
-    # the email message
-    subject = "Your Password Recovery"
-    body = f"Your password is: {password}"
-
-    msg = MIMEText(body)
-    msg["Subject"] = subject
-    msg["From"] = from_address
-    msg["To"] = to_address
-
-    try:
-        # Connecting to the SMTP server
-        server = smtplib.SMTP(smtp_server, smtp_port)
-        server.starttls()
-        server.login(username, password)
-
-        # Send email
-        server.sendmail(from_address, [to_address], msg.as_string())
-
-        server.quit()
-
-        return True  # Email sent successfully
-
-    except Exception as e:
-        print(f"Error: {e}")
-        return False 
 # Initialize logging
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'
 
+# Setup Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'  # Redirect to login page if not authenticated
+login_manager.login_view = 'login'
 
-# Mock User class for demonstration purposes
+# User class for Flask-Login
 class User(UserMixin):
     def __init__(self, id, username):
         self.id = id
@@ -65,6 +35,7 @@ def load_user(user_id):
     logging.debug('User not found')
     return None
 
+# Initialize the database
 def init_db():
     conn = sqlite3.connect('brewery_reviews.db')
     cursor = conn.cursor()
@@ -162,18 +133,17 @@ def search_results():
     query = request.args.get('query')
     search_by = request.args.get('search_by')
     logging.debug(f'Searching breweries by {search_by} with query: {query}')
-    conn = sqlite3.connect('brewery_reviews.db')
-    cursor = conn.cursor()
-
+    
     if search_by == 'name':
-        cursor.execute('SELECT * FROM breweries WHERE name LIKE ?', ('%' + query + '%',))
+        response = requests.get(f'https://api.openbrewerydb.org/breweries?by_name={query}')
     elif search_by == 'city':
-        cursor.execute('SELECT * FROM breweries WHERE city LIKE ?', ('%' + query + '%',))
+        response = requests.get(f'https://api.openbrewerydb.org/breweries?by_city={query}')
     elif search_by == 'type':
-        cursor.execute('SELECT * FROM breweries WHERE type LIKE ?', ('%' + query + '%',))
+        response = requests.get(f'https://api.openbrewerydb.org/breweries?by_type={query}')
+    else:
+        response = []
 
-    breweries = cursor.fetchall()
-    conn.close()
+    breweries = response.json() if response.status_code == 200 else []
     logging.debug(f'Found breweries: {breweries}')
     return render_template('search_results.html', breweries=breweries)
 
