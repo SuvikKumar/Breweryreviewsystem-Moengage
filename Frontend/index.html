@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Brewery Reviews</title>
+</head>
+<body>
+    <h1>Brewery Reviews</h1>
+    <ul>
+        {% for brewery in breweries %}
+            <li>
+                <a href="{{ url_for('brewery', brewery_id=brewery[0]) }}">{{ brewery[1] }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
