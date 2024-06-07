@@ -2,7 +2,39 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user, login_required
 import sqlite3
 import logging
+def send_password_to_email(to_address, password):
+    # the SMTP server
+    smtp_server = "your_smtp_server.com"
+    smtp_port = 587
+    username = "abcdefg@gmail.com"
+    password = "zpaf xboz emoh upf"
+    from_address = "abcdefg@gmail.com"
 
+    # the email message
+    subject = "Your Password Recovery"
+    body = f"Your password is: {password}"
+
+    msg = MIMEText(body)
+    msg["Subject"] = subject
+    msg["From"] = from_address
+    msg["To"] = to_address
+
+    try:
+        # Connecting to the SMTP server
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(username, password)
+
+        # Send email
+        server.sendmail(from_address, [to_address], msg.as_string())
+
+        server.quit()
+
+        return True  # Email sent successfully
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return False 
 # Initialize logging
 logging.basicConfig(level=logging.DEBUG)
 
