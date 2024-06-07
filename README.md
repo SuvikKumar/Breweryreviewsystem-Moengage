@@ -19,7 +19,7 @@ This is a Flask web application that allows users to search for breweries, view 
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/your-username/brewery-reviews.git
+    git clone https://github.com/SuvikKumar/Breweryreviewsystem-Moengage/tree/main.git
     cd brewery-reviews
     ```
 
