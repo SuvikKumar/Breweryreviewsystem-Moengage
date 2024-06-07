@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Search Results</h1>
+    <ul>
+        {% for brewery in breweries %}
+            <li>
+                <strong>Name:</strong> {{ brewery[1] }} <br>
+                <strong>Address:</strong> {{ brewery[2] }} <br>
+                <strong>Phone:</strong> {{ brewery[3] }} <br>
+                <strong>Website:</strong> <a href="{{ brewery[4] }}">{{ brewery[4] }}</a> <br>
+                <strong>City:</strong> {{ brewery[5] }} <br>
+                <strong>State:</strong> {{ brewery[6] }} <br>
+                <strong>Current Rating:</strong> {{ brewery[7] }} <br>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+</html>
